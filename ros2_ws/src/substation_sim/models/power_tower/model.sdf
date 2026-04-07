@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="power_tower">
+    <static>true</static>
+    <link name="link">
+      <!-- PHYSICS/COLLISION OPTIMIZATION: Use a single simple Cylinder for collision -->
+      <collision name="collision">
+        <pose>0 0 5 0 0 0</pose>
+        <geometry><cylinder><radius>0.4</radius><length>10</length></cylinder></geometry>
+      </collision>
+
+      <!-- VISUAL: A lattice tower look -->
+      <visual name="main_post">
+        <pose>0 0 5 0 0 0</pose>
+        <geometry><cylinder><radius>0.2</radius><length>10</length></cylinder></geometry>
+        <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material>
+      </visual>
+      <visual name="arm_top">
+        <pose>0 0 9 0 1.5708 0</pose>
+        <geometry><box><size>0.2 0.2 4</size></box></geometry>
+        <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material>
+      </visual>
+      <visual name="arm_middle">
+        <pose>0 0 7 0 1.5708 0</pose>
+        <geometry><box><size>0.2 0.2 6</size></box></geometry>
+        <material><script><uri>file://media/materials/scripts/gazebo.material</uri><name>Gazebo/Grey</name></script></material>
+      </visual>
+    </link>
+  </model>
+</sdf>

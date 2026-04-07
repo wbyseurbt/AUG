@@ -1,0 +1,71 @@
+[0.007s] Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake /home/robot/ros2_ws/src/substation_sim -DCMAKE_INSTALL_PREFIX=/home/robot/ros2_ws/install/substation_sim
+[0.744s] -- The C compiler identification is GNU 11.4.0
+[1.188s] -- The CXX compiler identification is GNU 11.4.0
+[1.250s] -- Detecting C compiler ABI info
+[1.383s] -- Detecting C compiler ABI info - done
+[1.392s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.395s] -- Detecting C compile features
+[1.401s] -- Detecting C compile features - done
+[1.418s] -- Detecting CXX compiler ABI info
+[1.534s] -- Detecting CXX compiler ABI info - done
+[1.543s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.543s] -- Detecting CXX compile features
+[1.543s] -- Detecting CXX compile features - done
+[1.550s] -- Found ament_cmake: 1.3.13 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.719s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[1.846s] -- Configuring done
+[1.847s] -- Generating done
+[1.849s] -- Build files have been written to: /home/robot/ros2_ws/build/substation_sim
+[1.852s] Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake /home/robot/ros2_ws/src/substation_sim -DCMAKE_INSTALL_PREFIX=/home/robot/ros2_ws/install/substation_sim
+[1.854s] Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20
+[1.910s] Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20
+[1.928s] Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --install /home/robot/ros2_ws/build/substation_sim
+[1.939s] -- Install configuration: ""
+[1.940s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch
+[1.940s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch/road_collision_test.launch.py
+[1.940s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch/slam.launch.py
+[1.940s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch/multi_spawn.launch.py
+[1.940s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch/simulation.launch.py
+[1.941s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch/__pycache__
+[1.941s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch/__pycache__/road_collision_test.launch.cpython-310.pyc
+[1.941s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/launch/__pycache__/simulation.launch.cpython-310.pyc
+[1.941s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/worlds
+[1.941s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/worlds/substation.world
+[1.942s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/worlds/road_collision_test.world
+[1.942s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/urdf
+[1.942s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/urdf/robot.urdf.xacro
+[1.942s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models
+[1.942s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/transformer
+[1.943s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/transformer/model.config
+[1.943s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/transformer/model.sdf
+[1.943s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/power_tower
+[1.943s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/power_tower/model.config
+[1.943s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/power_tower/model.sdf
+[1.943s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/main_building
+[1.944s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/main_building/model.config
+[1.944s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/main_building/model.sdf
+[1.944s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/insulator_row
+[1.944s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/insulator_row/model.config
+[1.944s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/models/insulator_row/model.sdf
+[1.944s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/maps
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/rviz
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/scripts
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/scripts/inspection_node.py
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/config
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/config/nav2_params.yaml
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/ament_index/resource_index/package_run_dependencies/substation_sim
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/ament_index/resource_index/parent_prefix_path/substation_sim
+[1.945s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/environment/ament_prefix_path.sh
+[1.946s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/environment/ament_prefix_path.dsv
+[1.946s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/environment/path.sh
+[1.946s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/environment/path.dsv
+[1.946s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/local_setup.bash
+[1.948s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/local_setup.sh
+[1.949s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/local_setup.zsh
+[1.949s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/local_setup.dsv
+[1.949s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/package.dsv
+[1.949s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/ament_index/resource_index/packages/substation_sim
+[1.949s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/cmake/substation_simConfig.cmake
+[1.949s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/cmake/substation_simConfig-version.cmake
+[1.950s] -- Installing: /home/robot/ros2_ws/install/substation_sim/share/substation_sim/package.xml
+[1.951s] Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --install /home/robot/ros2_ws/build/substation_sim

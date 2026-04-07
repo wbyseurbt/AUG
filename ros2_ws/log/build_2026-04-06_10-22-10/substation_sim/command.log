@@ -1,0 +1,6 @@
+Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake /home/robot/ros2_ws/src/substation_sim -DCMAKE_INSTALL_PREFIX=/home/robot/ros2_ws/install/substation_sim
+Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake /home/robot/ros2_ws/src/substation_sim -DCMAKE_INSTALL_PREFIX=/home/robot/ros2_ws/install/substation_sim
+Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20
+Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20
+Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --install /home/robot/ros2_ws/build/substation_sim
+Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --install /home/robot/ros2_ws/build/substation_sim

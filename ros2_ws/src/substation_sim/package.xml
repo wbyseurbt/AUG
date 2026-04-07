@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>substation_sim</name>
+  <version>0.0.0</version>
+  <description>变电站巡检环境资源包</description>
+  <maintainer email="xxx@todo.todo">xxx</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- 移除运行时的强依赖，允许包在资源不全的环境中完成构建 -->
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
