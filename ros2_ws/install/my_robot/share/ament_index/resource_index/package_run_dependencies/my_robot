@@ -1,1 +1,1 @@
-/home/robot/ros2_ws/build/my_robot/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_robot
+gazebo_ros;robot_state_publisher;xacro;rviz2;rclpy;geometry_msgs;teleop_twist_keyboard;substation_sim;ament_lint_auto;ament_lint_common

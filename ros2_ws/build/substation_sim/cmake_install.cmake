@@ -1,8 +1,8 @@
-# Install script for directory: /home/robot/ros2_ws/src/substation_sim
+# Install script for directory: /home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/robot/ros2_ws/install/substation_sim")
+  set(CMAKE_INSTALL_PREFIX "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/install/substation_sim")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -44,23 +44,23 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE DIRECTORY FILES
-    "/home/robot/ros2_ws/src/substation_sim/launch"
-    "/home/robot/ros2_ws/src/substation_sim/worlds"
-    "/home/robot/ros2_ws/src/substation_sim/urdf"
-    "/home/robot/ros2_ws/src/substation_sim/models"
-    "/home/robot/ros2_ws/src/substation_sim/maps"
-    "/home/robot/ros2_ws/src/substation_sim/rviz"
-    "/home/robot/ros2_ws/src/substation_sim/scripts"
-    "/home/robot/ros2_ws/src/substation_sim/config"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/launch"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/worlds"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/urdf"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/models"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/maps"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/rviz"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/scripts"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/config"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/substation_sim")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/substation_sim")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/substation_sim")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/substation_sim")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -68,7 +68,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim/environment" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/ament_prefix_path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim/environment" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/ament_prefix_path.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -76,42 +76,42 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim/environment" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim/environment" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/path.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.bash")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.bash")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.sh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.sh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.zsh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.zsh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/local_setup.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/package.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_environment_hooks/package.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/robot/ros2_ws/build/substation_sim/ament_cmake_index/share/ament_index/resource_index/packages/substation_sim")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_index/share/ament_index/resource_index/packages/substation_sim")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim/cmake" TYPE FILE FILES
-    "/home/robot/ros2_ws/build/substation_sim/ament_cmake_core/substation_simConfig.cmake"
-    "/home/robot/ros2_ws/build/substation_sim/ament_cmake_core/substation_simConfig-version.cmake"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_core/substation_simConfig.cmake"
+    "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_core/substation_simConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/robot/ros2_ws/src/substation_sim/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/substation_sim" TYPE FILE FILES "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim/package.xml")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -122,5 +122,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/robot/ros2_ws/build/substation_sim/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

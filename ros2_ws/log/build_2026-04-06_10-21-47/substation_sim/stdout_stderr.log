@@ -1,3 +1,0 @@
-[0mCMake Error: The source directory "/home/robot/ros2_ws/project1/ros2_ws/src/substation_sim" does not exist.
-Specify --help for usage, or press the help button on the CMake GUI.[0m
-gmake: *** [Makefile:226：cmake_check_build_system] 错误 1

@@ -1,4 +1,0 @@
-Invoking command in '/home/robot/ros2_ws/build/my_robot': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-4) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/my_robot -- -j20 -l20
-Invoked command in '/home/robot/ros2_ws/build/my_robot' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-4) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/my_robot -- -j20 -l20
-Invoking command in '/home/robot/ros2_ws/build/my_robot': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-4) \w [$?] $ /usr/bin/cmake --install /home/robot/ros2_ws/build/my_robot
-Invoked command in '/home/robot/ros2_ws/build/my_robot' returned '1': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-4) \w [$?] $ /usr/bin/cmake --install /home/robot/ros2_ws/build/my_robot

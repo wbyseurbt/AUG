@@ -1,5 +1,0 @@
-[0.040s] Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20
-[0.091s] [0mCMake Error: The source directory "/home/robot/ros2_ws/project1/ros2_ws/src/substation_sim" does not exist.
-[0.092s] Specify --help for usage, or press the help button on the CMake GUI.[0m
-[0.096s] gmake: *** [Makefile:226：cmake_check_build_system] 错误 1
-[0.101s] Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '2': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20

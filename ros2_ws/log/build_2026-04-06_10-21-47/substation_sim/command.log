@@ -1,2 +1,0 @@
-Invoking command in '/home/robot/ros2_ws/build/substation_sim': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20
-Invoked command in '/home/robot/ros2_ws/build/substation_sim' returned '2': CMAKE_PREFIX_PATH=/opt/ros/humble __trae_PS1=\n(TraeAI-5) \w [$?] $ /usr/bin/cmake --build /home/robot/ros2_ws/build/substation_sim -- -j20 -l20
