@@ -127,6 +127,7 @@ ros2 run nav2_map_server map_saver_cli -f src/substation_sim/maps/substation_glo
 先检查文件是否存在：
 
 ```bash
+rviz2
 cd ~/workspace/robotsoftware/AUG/ros2_ws
 ls -lh src/substation_sim/maps/substation_global.yaml src/substation_sim/maps/substation_global.pgm
 ```
@@ -160,12 +161,17 @@ RViz 中设置：
 
 - Fixed Frame: `map`
 - 添加 `Map` 显示，Topic 选择 `/map`
+- 左侧边栏/map下Topic下的Durability Policy改为Transient Local
 
 质量判据：
 
 - 道路边缘平滑连续
 - 设备障碍物边界清晰
 - 无明显重影或整体漂移
+
+如果想保留灰色未知（Unknown）区域：
+
+-修改pgm对应的.yaml文件中的free_thresh为0.15
 
 ## 8. 常见报错与处理
 
