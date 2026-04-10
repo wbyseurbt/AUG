@@ -171,7 +171,7 @@ RViz 中设置：
 
 如果想保留灰色未知（Unknown）区域：
 
--修改pgm对应的.yaml文件中的free_thresh为0.15
+- 修改pgm对应的.yaml文件中的free_thresh为0.15
 
 ## 8. 常见报错与处理
 
