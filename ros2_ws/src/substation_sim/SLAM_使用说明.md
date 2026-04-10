@@ -161,7 +161,7 @@ RViz 中设置：
 
 - Fixed Frame: `map`
 - 添加 `Map` 显示，Topic 选择 `/map`
-- 左侧边栏/map下Topic下的Durability Policy改为Transient Local
+- 左侧边栏 `/map` 下Topic下的Durability Policy改为Transient Local
 
 质量判据：
 
