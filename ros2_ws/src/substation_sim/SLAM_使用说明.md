@@ -161,7 +161,7 @@ RViz 中设置：
 
 - Fixed Frame: `map`
 - 添加 `Map` 显示，Topic 选择 `/map`
-- 左侧边栏 `/map` 下Topic下的Durability Policy改为Transient Local
+- 左侧边栏 `/map` 下Topic下的 `Durability Policy` 改为 `Transient Local` 
 
 质量判据：
 
@@ -171,7 +171,7 @@ RViz 中设置：
 
 如果想保留灰色未知（Unknown）区域：
 
-- 修改pgm对应的.yaml文件中的free_thresh为0.15
+- 修改.pgm文件对应的.yaml文件中的 `free_thresh` 为0.15
 
 ## 8. 常见报错与处理
 
