@@ -26,9 +26,13 @@ class InspectionNode(Node):
             (-20.0, -20.0, 0.0, "Home")
         ]
         self.current_wp_index = 0
-        self.screenshot_dir = '/home/robot/ros2_ws/inspection_results'
-        if not os.path.exists(self.screenshot_dir):
-            os.makedirs(self.screenshot_dir)
+        self.declare_parameter('screenshot_dir', '/tmp/inspection_results')
+        self.screenshot_dir = self.get_parameter('screenshot_dir').value
+        try:
+            os.makedirs(self.screenshot_dir, exist_ok=True)
+        except OSError:
+            self.screenshot_dir = '/tmp/inspection_results'
+            os.makedirs(self.screenshot_dir, exist_ok=True)
             
     def image_callback(self, msg):
         self.latest_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")

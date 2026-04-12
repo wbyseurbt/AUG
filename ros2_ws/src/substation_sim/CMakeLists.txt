@@ -8,7 +8,6 @@ find_package(ament_cmake REQUIRED)
 install(DIRECTORY
   launch
   worlds
-  urdf
   models
   maps
   rviz

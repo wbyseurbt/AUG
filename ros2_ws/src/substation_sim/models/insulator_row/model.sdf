@@ -3,10 +3,25 @@
   <model name="insulator_row">
     <static>true</static>
     <link name="link">
-      <!-- PHYSICS/COLLISION OPTIMIZATION: A single long Box for the entire row -->
-      <collision name="collision">
+      <collision name="post_collision_1">
+        <pose>0 -4 1.5 0 0 0</pose>
+        <geometry><cylinder><radius>0.2</radius><length>3</length></cylinder></geometry>
+      </collision>
+      <collision name="post_collision_2">
+        <pose>0 -2 1.5 0 0 0</pose>
+        <geometry><cylinder><radius>0.2</radius><length>3</length></cylinder></geometry>
+      </collision>
+      <collision name="post_collision_3">
         <pose>0 0 1.5 0 0 0</pose>
-        <geometry><box><size>1 10 3</size></box></geometry>
+        <geometry><cylinder><radius>0.2</radius><length>3</length></cylinder></geometry>
+      </collision>
+      <collision name="post_collision_4">
+        <pose>0 2 1.5 0 0 0</pose>
+        <geometry><cylinder><radius>0.2</radius><length>3</length></cylinder></geometry>
+      </collision>
+      <collision name="post_collision_5">
+        <pose>0 4 1.5 0 0 0</pose>
+        <geometry><cylinder><radius>0.2</radius><length>3</length></cylinder></geometry>
       </collision>
 
       <!-- VISUAL: A row of insulator posts -->
