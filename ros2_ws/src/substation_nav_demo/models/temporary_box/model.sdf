@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="temporary_box">
+    <static>true</static>
+    <pose>0 0 0.25 0 0 0</pose>
+    <link name="body">
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.32 0.32 0.5</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.32 0.32 0.5</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0.1 0.1 1</ambient>
+          <diffuse>1 0.1 0.1 1</diffuse>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

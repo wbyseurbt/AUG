@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="start_marker">
+    <static>true</static>
+    <link name="marker_link">
+      <visual name="cylinder_visual">
+        <pose>0 0 0.03 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.35</radius>
+            <length>0.06</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.1 0.9 0.1 0.95</ambient>
+          <diffuse>0.1 0.9 0.1 0.95</diffuse>
+        </material>
+      </visual>
+      <visual name="arrow_body_visual">
+        <pose>0.25 0 0.08 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.08 0.08</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.0 0.6 0.0 1</ambient>
+          <diffuse>0.0 0.6 0.0 1</diffuse>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

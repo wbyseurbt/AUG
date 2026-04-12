@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim
+CMAKE_SOURCE_DIR = /root/dev_ws/AUG/ros2_ws/src/substation_sim
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim
+CMAKE_BINARY_DIR = /root/dev_ws/AUG/ros2_ws/build/substation_sim
 
 # Utility rule file for substation_sim_uninstall.
 
@@ -67,7 +67,7 @@ include CMakeFiles/substation_sim_uninstall.dir/compiler_depend.make
 include CMakeFiles/substation_sim_uninstall.dir/progress.make
 
 CMakeFiles/substation_sim_uninstall:
-	/usr/bin/cmake -P /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
+	/usr/bin/cmake -P /root/dev_ws/AUG/ros2_ws/build/substation_sim/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
 
 substation_sim_uninstall: CMakeFiles/substation_sim_uninstall
 substation_sim_uninstall: CMakeFiles/substation_sim_uninstall.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/substation_sim_uninstall.dir/clean:
 .PHONY : CMakeFiles/substation_sim_uninstall.dir/clean
 
 CMakeFiles/substation_sim_uninstall.dir/depend:
-	cd /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim /home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/CMakeFiles/substation_sim_uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /root/dev_ws/AUG/ros2_ws/build/substation_sim && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /root/dev_ws/AUG/ros2_ws/src/substation_sim /root/dev_ws/AUG/ros2_ws/src/substation_sim /root/dev_ws/AUG/ros2_ws/build/substation_sim /root/dev_ws/AUG/ros2_ws/build/substation_sim /root/dev_ws/AUG/ros2_ws/build/substation_sim/CMakeFiles/substation_sim_uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/substation_sim_uninstall.dir/depend
 

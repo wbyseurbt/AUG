@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/fsz/workspace/robotsoftware/AUG/ros2_ws/src/substation_sim
+CMAKE_SOURCE_DIR = /root/dev_ws/AUG/ros2_ws/src/substation_sim
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim
+CMAKE_BINARY_DIR = /root/dev_ws/AUG/ros2_ws/build/substation_sim
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -142,9 +142,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/CMakeFiles /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/dev_ws/AUG/ros2_ws/build/substation_sim/CMakeFiles /root/dev_ws/AUG/ros2_ws/build/substation_sim//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/fsz/workspace/robotsoftware/AUG/ros2_ws/build/substation_sim/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/dev_ws/AUG/ros2_ws/build/substation_sim/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
