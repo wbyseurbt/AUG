@@ -1,0 +1,49 @@
+name,x,y,z,size
+north_wall,0,45,1.5,box(100x1x3)     //围墙
+south_wall,0,-45,1.5,box(100x1x3)
+east_wall,50,0,1.5,box(1x90x3)
+west_wall,-50,0,1.5,box(1x90x3)
+main_office,-10,-30,0,box(30x10x5)    //主楼
+tf_1,-10,0,0,box(3x3x3)        //四个变压器
+tf_2,-10,10,0,box(3x3x3)
+tf_3,-10,20,0,box(3x3x3)
+tf_4,-10,-10,0,box(3x3x3)
+tower_nw,-40,40,0,cylinder(r=0.4,h=10)    //四个电塔
+tower_ne,40,40,0,cylinder(r=0.4,h=10)
+tower_sw,-40,-40,0,cylinder(r=0.4,h=10)
+tower_se,40,-40,0,cylinder(r=0.4,h=10)
+ins_row_1_post_1,25,16,1.5,cylinder(r=0.2,h=3)//六组绝缘子排
+ins_row_1_post_2,25,18,1.5,cylinder(r=0.2,h=3)
+ins_row_1_post_3,25,20,1.5,cylinder(r=0.2,h=3)
+ins_row_1_post_4,25,22,1.5,cylinder(r=0.2,h=3)
+ins_row_1_post_5,25,24,1.5,cylinder(r=0.2,h=3)
+
+ins_row_2_post_1,25,-4,1.5,cylinder(r=0.2,h=3)
+ins_row_2_post_2,25,-2,1.5,cylinder(r=0.2,h=3)
+ins_row_2_post_3,25,0,1.5,cylinder(r=0.2,h=3)
+ins_row_2_post_4,25,2,1.5,cylinder(r=0.2,h=3)
+ins_row_2_post_5,25,4,1.5,cylinder(r=0.2,h=3)
+
+ins_row_3_post_1,25,-24,1.5,cylinder(r=0.2,h=3)
+ins_row_3_post_2,25,-22,1.5,cylinder(r=0.2,h=3)
+ins_row_3_post_3,25,-20,1.5,cylinder(r=0.2,h=3)
+ins_row_3_post_4,25,-18,1.5,cylinder(r=0.2,h=3)
+ins_row_3_post_5,25,-16,1.5,cylinder(r=0.2,h=3)
+
+ins_row_4_post_1,45,16,1.5,cylinder(r=0.2,h=3)
+ins_row_4_post_2,45,18,1.5,cylinder(r=0.2,h=3)
+ins_row_4_post_3,45,20,1.5,cylinder(r=0.2,h=3)
+ins_row_4_post_4,45,22,1.5,cylinder(r=0.2,h=3)
+ins_row_4_post_5,45,24,1.5,cylinder(r=0.2,h=3)
+
+ins_row_5_post_1,45,-4,1.5,cylinder(r=0.2,h=3)
+ins_row_5_post_2,45,-2,1.5,cylinder(r=0.2,h=3)
+ins_row_5_post_3,45,0,1.5,cylinder(r=0.2,h=3)
+ins_row_5_post_4,45,2,1.5,cylinder(r=0.2,h=3)
+ins_row_5_post_5,45,4,1.5,cylinder(r=0.2,h=3)
+
+ins_row_6_post_1,45,-24,1.5,cylinder(r=0.2,h=3)
+ins_row_6_post_2,45,-22,1.5,cylinder(r=0.2,h=3)
+ins_row_6_post_3,45,-20,1.5,cylinder(r=0.2,h=3)
+ins_row_6_post_4,45,-18,1.5,cylinder(r=0.2,h=3)
+ins_row_6_post_5,45,-16,1.5,cylinder(r=0.2,h=3)
