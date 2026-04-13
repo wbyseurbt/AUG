@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import csv
 import math
-import re
 from typing import List, Tuple
 
 import rclpy
@@ -56,64 +54,24 @@ class GoalMarkerPublisher(Node):
         end_x: float,
         end_y: float,
     ) -> List[Tuple[str, float, float, float]]:
+        _ = facility_csv
         markers: List[Tuple[str, float, float, float]] = [
             ('START', start_x, start_y, 0.0),
             ('ROAD_CRUISE_1', -30.0, -15.0, 0.0),
+            ('tf_4', -13.2, -10.0, 0.0),
+            ('tf_1', -13.2, 0.0, 0.0),
+            ('tf_2', -13.2, 10.0, 0.0),
+            ('tf_3', -13.2, 20.0, 0.0),
+            ('ROAD_RETURN', -13.2, 35.0, 0.0),
+            ('ROAD_RETURN2', 20.0, 35.0, 0.0),
+            ('ins_row_1_post_3', 23.8, 20.0, 0.0),
+            ('ins_row_2_post_3', 23.8, 0.0, 0.0),
+            ('ins_row_3_post_3', 23.8, -20.0, 0.0),
+            ('ins_row_6_post_3', 43.8, -20.0, 0.0),
+            ('ins_row_5_post_3', 43.8, 0.0, 0.0),
+            ('ins_row_4_post_3', 43.8, 20.0, 0.0),
+            ('END', end_x, end_y, 0.0),
         ]
-        transformers = {}
-        ins_rows = {}
-
-        if facility_csv:
-            with open(facility_csv, 'r', encoding='utf-8') as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    name = (row.get('name') or '').strip()
-                    if '//' in name:
-                        name = name.split('//', 1)[0].strip()
-                    lower_name = name.lower()
-                    if not lower_name or 'wall' in lower_name:
-                        continue
-                    try:
-                        x = float((row.get('x') or '').strip())
-                        y = float((row.get('y') or '').strip())
-                    except (TypeError, ValueError):
-                        continue
-
-                    tf_match = re.fullmatch(r'tf_(\d+)', lower_name)
-                    if tf_match:
-                        transformers[int(tf_match.group(1))] = (name, x, y)
-                        continue
-
-                    row_match = re.fullmatch(r'ins_row_(\d+)_post_(\d+)', lower_name)
-                    if row_match:
-                        row_idx = int(row_match.group(1))
-                        post_idx = int(row_match.group(2))
-                        ins_rows.setdefault(row_idx, []).append((post_idx, name, x, y))
-
-        for tf_idx in (1, 2, 3, 4):
-            if tf_idx in transformers:
-                name, x, y = transformers[tf_idx]
-                markers.append((name, x, y, 0.0))
-
-        markers.append(('ROAD_RETURN', 8.0, 0.0, 0.0))
-
-        for row_idx in range(1, 7):
-            posts = ins_rows.get(row_idx, [])
-            if not posts:
-                continue
-            posts.sort(key=lambda item: item[0])
-            target = None
-            for post_idx, post_name, x, y in posts:
-                if post_idx == 3:
-                    target = (post_name, x, y)
-                    break
-            if target is None:
-                _, post_name, x, y = posts[len(posts) // 2]
-                target = (post_name, x, y)
-            name, x, y = target
-            markers.append((name, x, y, 0.0))
-
-        markers.append(('END', end_x, end_y, 0.0))
 
         marker_list: List[Tuple[str, float, float, float]] = []
         for i, (name, x, y, _) in enumerate(markers):

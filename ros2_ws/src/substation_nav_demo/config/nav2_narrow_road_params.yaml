@@ -131,8 +131,8 @@ controller_server:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: True
       # 过紧易在终点附近来回扭动、轮子空转；略放宽以换顺滑停稳
-      xy_goal_tolerance: 0.09
-      yaw_goal_tolerance: 0.14
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       # 关闭后不再发布大量候选轨迹 Marker，避免 RViz 里“轨迹乱跳”的错觉

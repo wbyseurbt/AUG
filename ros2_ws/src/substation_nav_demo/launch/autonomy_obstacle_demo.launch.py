@@ -17,8 +17,10 @@ def generate_launch_description():
 
     obstacle_ahead_distance = LaunchConfiguration('obstacle_ahead_distance')
     obstacle_lateral_offset = LaunchConfiguration('obstacle_lateral_offset')
+    obstacle_random_lateral_range = LaunchConfiguration('obstacle_random_lateral_range')
     obstacle_z = LaunchConfiguration('obstacle_z')
-    obstacle_delay = LaunchConfiguration('obstacle_delay_sec')
+    obstacle_start_delay = LaunchConfiguration('obstacle_start_delay_sec')
+    obstacle_period = LaunchConfiguration('obstacle_period_sec')
     enable_random_obstacle = LaunchConfiguration('enable_random_obstacle')
 
     facility_csv = LaunchConfiguration('facility_csv')
@@ -75,25 +77,23 @@ def generate_launch_description():
         output='screen',
     )
 
-    obstacle_spawner = TimerAction(
-        period=obstacle_delay,
+    obstacle_spawner = Node(
+        package='substation_nav_demo',
+        executable='spawn_obstacle_ahead.py',
+        name='spawn_obstacle_ahead',
         condition=IfCondition(enable_random_obstacle),
-        actions=[
-            Node(
-                package='substation_nav_demo',
-                executable='spawn_obstacle_ahead.py',
-                name='spawn_obstacle_ahead',
-                parameters=[{
-                    'entity_name': 'temporary_box',
-                    'model_file': obstacle_model_file,
-                    'ahead_distance': obstacle_ahead_distance,
-                    'lateral_offset': obstacle_lateral_offset,
-                    'z': obstacle_z,
-                    'wait_timeout_sec': 30.0,
-                }],
-                output='screen',
-            )
-        ],
+        parameters=[{
+            'entity_prefix': 'temporary_box',
+            'model_file': obstacle_model_file,
+            'ahead_distance': obstacle_ahead_distance,
+            'lateral_offset': obstacle_lateral_offset,
+            'random_lateral_range': obstacle_random_lateral_range,
+            'z': obstacle_z,
+            'start_delay_sec': obstacle_start_delay,
+            'spawn_period_sec': obstacle_period,
+            'wait_timeout_sec': 30.0,
+        }],
+        output='screen',
     )
 
     start_marker_spawner = TimerAction(
@@ -188,9 +188,11 @@ def generate_launch_description():
         DeclareLaunchArgument('autostart', default_value='true'),
         DeclareLaunchArgument('obstacle_ahead_distance', default_value='1.2'),
         DeclareLaunchArgument('obstacle_lateral_offset', default_value='0.0'),
+        DeclareLaunchArgument('obstacle_random_lateral_range', default_value='0.35'),
         DeclareLaunchArgument('obstacle_z', default_value='0.1'),
-        DeclareLaunchArgument('obstacle_delay_sec', default_value='18.0'),
-        DeclareLaunchArgument('enable_random_obstacle', default_value='false'),
+        DeclareLaunchArgument('obstacle_start_delay_sec', default_value='30.0'),
+        DeclareLaunchArgument('obstacle_period_sec', default_value='60.0'),
+        DeclareLaunchArgument('enable_random_obstacle', default_value='true'),
         DeclareLaunchArgument('goal_start_delay_sec', default_value='12.0'),
         DeclareLaunchArgument(
             'facility_csv',
