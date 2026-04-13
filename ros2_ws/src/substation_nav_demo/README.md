@@ -1,4 +1,4 @@
-# substation_nav_demo
+# substation\_nav\_demo
 
 用于演示“单车自主导航 + 动态避障 + RViz 可视化”的独立 ROS2 包。
 
@@ -23,7 +23,7 @@ sudo apt install -y \
 ## 编译
 
 ```bash
-cd /root/dev_ws/AUG/ros2_ws
+cd AUG/ros2_ws
 source /opt/ros/humble/setup.bash
 colcon build --packages-select substation_nav_demo
 source install/setup.bash
@@ -82,3 +82,4 @@ ros2 launch substation_nav_demo autonomy_obstacle_demo.launch.py \
 
 - 仅保留当前演示必需代码（单一 launch 入口 + 三个脚本节点 + 三类模型资源）。
 - 删除了无效参数链路（如未被实际使用的 `target_model` 参数），避免后续维护混淆。
+

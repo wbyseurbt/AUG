@@ -1,5 +1,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, SetEnvironmentVariable, TimerAction
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -18,13 +19,13 @@ def generate_launch_description():
     obstacle_lateral_offset = LaunchConfiguration('obstacle_lateral_offset')
     obstacle_z = LaunchConfiguration('obstacle_z')
     obstacle_delay = LaunchConfiguration('obstacle_delay_sec')
+    enable_random_obstacle = LaunchConfiguration('enable_random_obstacle')
 
-    goal1_x = LaunchConfiguration('goal_1_x')
-    goal1_y = LaunchConfiguration('goal_1_y')
-    goal1_yaw = LaunchConfiguration('goal_1_yaw')
-    goal2_x = LaunchConfiguration('goal_2_x')
-    goal2_y = LaunchConfiguration('goal_2_y')
-    goal2_yaw = LaunchConfiguration('goal_2_yaw')
+    facility_csv = LaunchConfiguration('facility_csv')
+    route_start_x = LaunchConfiguration('route_start_x')
+    route_start_y = LaunchConfiguration('route_start_y')
+    route_end_x = LaunchConfiguration('route_end_x')
+    route_end_y = LaunchConfiguration('route_end_y')
     goal_delay = LaunchConfiguration('goal_start_delay_sec')
     goal_frame = LaunchConfiguration('goal_frame')
 
@@ -76,6 +77,7 @@ def generate_launch_description():
 
     obstacle_spawner = TimerAction(
         period=obstacle_delay,
+        condition=IfCondition(enable_random_obstacle),
         actions=[
             Node(
                 package='substation_nav_demo',
@@ -102,8 +104,8 @@ def generate_launch_description():
                     'ros2', 'run', 'gazebo_ros', 'spawn_entity.py',
                     '-entity', 'start_marker',
                     '-file', PathJoinSubstitution([demo_share, 'models', 'start_marker', 'model.sdf']),
-                    '-x', '0.0',
-                    '-y', '0.0',
+                    '-x', route_start_x,
+                    '-y', route_start_y,
                     '-z', '0.02',
                     '-Y', '0.0',
                 ],
@@ -118,30 +120,12 @@ def generate_launch_description():
             ExecuteProcess(
                 cmd=[
                     'ros2', 'run', 'gazebo_ros', 'spawn_entity.py',
-                    '-entity', 'goal1_marker',
-                    '-file', PathJoinSubstitution([demo_share, 'models', 'goal_marker', 'model.sdf']),
-                    '-x', goal1_x,
-                    '-y', goal1_y,
-                    '-z', '0.02',
-                    '-Y', goal1_yaw,
-                ],
-                output='screen',
-            )
-        ],
-    )
-
-    goal2_marker_spawner = TimerAction(
-        period=6.0,
-        actions=[
-            ExecuteProcess(
-                cmd=[
-                    'ros2', 'run', 'gazebo_ros', 'spawn_entity.py',
                     '-entity', 'goal2_marker',
                     '-file', PathJoinSubstitution([demo_share, 'models', 'goal_marker', 'model.sdf']),
-                    '-x', goal2_x,
-                    '-y', goal2_y,
+                    '-x', route_end_x,
+                    '-y', route_end_y,
                     '-z', '0.02',
-                    '-Y', goal2_yaw,
+                    '-Y', '0.0',
                 ],
                 output='screen',
             )
@@ -157,13 +141,11 @@ def generate_launch_description():
             {
                 'start_delay_sec': goal_delay,
                 'frame_id': goal_frame,
-                'goal_1_x': goal1_x,
-                'goal_1_y': goal1_y,
-                'goal_1_yaw': goal1_yaw,
-                'goal_2_x': goal2_x,
-                'goal_2_y': goal2_y,
-                'goal_2_yaw': goal2_yaw,
-                'enable_second_goal': True,
+                'facility_csv': facility_csv,
+                'route_start_x': route_start_x,
+                'route_start_y': route_start_y,
+                'route_end_x': route_end_x,
+                'route_end_y': route_end_y,
             },
         ],
         output='screen',
@@ -177,13 +159,11 @@ def generate_launch_description():
             {'use_sim_time': use_sim_time},
             {
                 'frame_id': goal_frame,
-                'goal_1_x': goal1_x,
-                'goal_1_y': goal1_y,
-                'goal_1_yaw': goal1_yaw,
-                'goal_2_x': goal2_x,
-                'goal_2_y': goal2_y,
-                'goal_2_yaw': goal2_yaw,
-                'enable_second_goal': True,
+                'facility_csv': facility_csv,
+                'route_start_x': route_start_x,
+                'route_start_y': route_start_y,
+                'route_end_x': route_end_x,
+                'route_end_y': route_end_y,
             },
         ],
         output='screen',
@@ -210,16 +190,19 @@ def generate_launch_description():
         DeclareLaunchArgument('obstacle_lateral_offset', default_value='0.0'),
         DeclareLaunchArgument('obstacle_z', default_value='0.1'),
         DeclareLaunchArgument('obstacle_delay_sec', default_value='18.0'),
+        DeclareLaunchArgument('enable_random_obstacle', default_value='false'),
         DeclareLaunchArgument('goal_start_delay_sec', default_value='12.0'),
-        DeclareLaunchArgument('goal_1_x', default_value='30.0'),
-        DeclareLaunchArgument('goal_1_y', default_value='0.0'),
-        DeclareLaunchArgument('goal_1_yaw', default_value='0.0'),
-        DeclareLaunchArgument('goal_2_x', default_value='0.0'),
-        DeclareLaunchArgument('goal_2_y', default_value='0.0'),
-        DeclareLaunchArgument('goal_2_yaw', default_value='3.14'),
+        DeclareLaunchArgument(
+            'facility_csv',
+            default_value=PathJoinSubstitution([substation_sim_share, 'config', 'obstacles.csv'])
+        ),
+        DeclareLaunchArgument('route_start_x', default_value='-35.0'),
+        DeclareLaunchArgument('route_start_y', default_value='-35.0'),
+        DeclareLaunchArgument('route_end_x', default_value='45.0'),
+        DeclareLaunchArgument('route_end_y', default_value='40.0'),
         DeclareLaunchArgument('goal_frame', default_value='map'),
-        DeclareLaunchArgument('spawn_x', default_value='0.0'),
-        DeclareLaunchArgument('spawn_y', default_value='0.0'),
+        DeclareLaunchArgument('spawn_x', default_value='-35.0'),
+        DeclareLaunchArgument('spawn_y', default_value='-35.0'),
         DeclareLaunchArgument('spawn_z', default_value='0.1'),
         ExecuteProcess(
             cmd=['ros2', 'service', 'call', '/delete_entity', 'gazebo_msgs/DeleteEntity', "{name: 'temporary_box'}"],
@@ -244,6 +227,5 @@ def generate_launch_description():
         goal_sender,
         start_marker_spawner,
         goal1_marker_spawner,
-        goal2_marker_spawner,
         obstacle_spawner,
     ])

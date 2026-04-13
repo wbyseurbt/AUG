@@ -4,6 +4,14 @@
   <xacro:property name="wheel_radius" value="0.075"/>
   <xacro:property name="wheel_separation" value="0.32"/>
 
+  <!-- base_footprint 用于2D导航常见基座帧 -->
+  <link name="base_footprint"/>
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
   <!-- Base Link (车体) -->
   <link name="base_link">
     <inertial>
@@ -172,9 +180,6 @@
 
    <gazebo>
     <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
-      <ros>
-        <remapping>joint_states:=wheel_joint_states</remapping>
-      </ros>
       <update_rate>100</update_rate>
       <joint_name>left_wheel_joint</joint_name>
       <joint_name>right_wheel_joint</joint_name>

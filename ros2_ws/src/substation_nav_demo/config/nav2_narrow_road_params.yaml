@@ -41,8 +41,8 @@ amcl:
     set_initial_pose: true
     # 与当前 Gazebo 出生点 (0,0) 对齐的常用初值；若激光与栅格明显错位，请在 RViz 用「2D Pose Estimate」修正。
     initial_pose:
-      x: 0.0
-      y: 0.0
+      x: -35.0
+      y: -35.0
       z: 0.0
       yaw: 0.0
 
