@@ -1,0 +1,223 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Grid
+    - Alpha: 1
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: true
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /ugv1/map
+      Use Timestamp: false
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: PlannedRoutes
+      Namespaces:
+        ugv1_route_arrow: true
+        ugv1_route_line: true
+        ugv1_route_text: true
+        ugv2_route_arrow: true
+        ugv2_route_line: true
+        ugv2_route_text: true
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /multi_ugv_route_markers
+    - Class: rviz_common/Group
+      Enabled: true
+      Name: UGV1 Planner
+      Displays:
+        - Alpha: 0.35
+          Class: rviz_default_plugins/Map
+          Color Scheme: costmap
+          Draw Behind: false
+          Enabled: true
+          Name: UGV1 Global Costmap
+          Topic:
+            Depth: 1
+            Durability Policy: Transient Local
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv1/global_costmap/costmap
+          Use Timestamp: false
+          Value: true
+        - Alpha: 0.55
+          Class: rviz_default_plugins/Map
+          Color Scheme: costmap
+          Draw Behind: false
+          Enabled: true
+          Name: UGV1 Local Costmap
+          Topic:
+            Depth: 1
+            Durability Policy: Transient Local
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv1/local_costmap/costmap
+          Update Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv1/local_costmap/costmap_updates
+          Use Timestamp: false
+          Value: true
+        - Class: rviz_default_plugins/Polygon
+          Color: 25; 255; 0
+          Enabled: true
+          Name: UGV1 Global Footprint
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv1/global_costmap/published_footprint
+        - Class: rviz_default_plugins/Polygon
+          Color: 0; 255; 255
+          Enabled: true
+          Name: UGV1 Local Footprint
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv1/local_costmap/published_footprint
+        - Class: rviz_default_plugins/Path
+          Enabled: true
+          Name: UGV1 Global Path
+          Color: 255; 100; 100
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv1/plan
+        - Class: rviz_default_plugins/Path
+          Enabled: true
+          Name: UGV1 Local Path
+          Color: 255; 180; 180
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv1/local_plan
+    - Class: rviz_common/Group
+      Enabled: true
+      Name: UGV2 Planner
+      Displays:
+        - Alpha: 0.35
+          Class: rviz_default_plugins/Map
+          Color Scheme: costmap
+          Draw Behind: false
+          Enabled: true
+          Name: UGV2 Global Costmap
+          Topic:
+            Depth: 1
+            Durability Policy: Transient Local
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv2/global_costmap/costmap
+          Use Timestamp: false
+          Value: true
+        - Alpha: 0.55
+          Class: rviz_default_plugins/Map
+          Color Scheme: costmap
+          Draw Behind: false
+          Enabled: true
+          Name: UGV2 Local Costmap
+          Topic:
+            Depth: 1
+            Durability Policy: Transient Local
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv2/local_costmap/costmap
+          Update Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv2/local_costmap/costmap_updates
+          Use Timestamp: false
+          Value: true
+        - Class: rviz_default_plugins/Polygon
+          Color: 25; 255; 0
+          Enabled: true
+          Name: UGV2 Global Footprint
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv2/global_costmap/published_footprint
+        - Class: rviz_default_plugins/Polygon
+          Color: 0; 255; 255
+          Enabled: true
+          Name: UGV2 Local Footprint
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv2/local_costmap/published_footprint
+        - Class: rviz_default_plugins/Path
+          Enabled: true
+          Name: UGV2 Global Path
+          Color: 100; 255; 100
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv2/plan
+        - Class: rviz_default_plugins/Path
+          Enabled: true
+          Name: UGV2 Local Path
+          Color: 180; 255; 180
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /ugv2/local_plan
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+Views:
+  Current:
+    Class: rviz_default_plugins/Orbit
+    Distance: 42
+    Focal Point:
+      X: 0.0
+      Y: 0.0
+      Z: 0.0
+    Name: Current View
+    Pitch: 1.0
+    Yaw: 0.8

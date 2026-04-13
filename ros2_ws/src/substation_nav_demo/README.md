@@ -22,10 +22,12 @@ sudo apt install -y \
 
 ## 编译
 
+`substation_nav_demo` 运行依赖 `substation_sim` 与 `my_robot`，建议按“目标包 + 依赖”方式编译：
+
 ```bash
 cd AUG/ros2_ws
 source /opt/ros/humble/setup.bash
-colcon build --packages-select substation_nav_demo
+colcon build --packages-up-to substation_nav_demo
 source install/setup.bash
 ```
 
@@ -82,4 +84,3 @@ ros2 launch substation_nav_demo autonomy_obstacle_demo.launch.py \
 
 - 仅保留当前演示必需代码（单一 launch 入口 + 三个脚本节点 + 三类模型资源）。
 - 删除了无效参数链路（如未被实际使用的 `target_model` 参数），避免后续维护混淆。
-

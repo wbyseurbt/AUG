@@ -1,12 +1,19 @@
 robots:
   ugv1:
     - {name: "UGV1_START", x: -35.0, y: -35.0, device: "起点"}
-    - {name: "TF_A", x: -13.2, y: -10.0, device: "变压器A"}
-    - {name: "TF_B", x: -13.2, y: 10.0, device: "变压器B"}
+    - {name: "TF_4", x: -13.2, y: -10.0, device: "变电站-变压器4"}
+    - {name: "TF_1", x: -13.2, y: 0.0, device: "变电站-变压器1"}
+    - {name: "TF_2", x: -13.2, y: 10.0, device: "变电站-变压器2"}
+    - {name: "TF_3", x: -13.2, y: 20.0, device: "变电站-变压器3"}
     - {name: "UGV1_RETURN", x: -35.0, y: -35.0, device: "返回起点"}
 
   ugv2:
-    - {name: "UGV2_START", x: -28.0, y: -35.0, device: "起点"}
-    - {name: "INS_A", x: 23.8, y: 0.0, device: "绝缘子排A"}
-    - {name: "INS_B", x: 43.8, y: 0.0, device: "绝缘子排B"}
-    - {name: "UGV2_RETURN", x: -28.0, y: -35.0, device: "返回起点"}
+    - {name: "UGV2_START", x: 45.0, y: 40.0, device: "起点"}
+    - {name: "UGV2_middle", x: 23.8, y: 40.0, device: "中间点"}
+    - {name: "POLE_1", x: 23.8, y: 20.0, device: "电线杆1"}
+    - {name: "POLE_2", x: 23.8, y: 0.0, device: "电线杆2"}
+    - {name: "POLE_3", x: 23.8, y: -20.0, device: "电线杆3"}
+    - {name: "POLE_4", x: 43.8, y: -20.0, device: "电线杆4"}
+    - {name: "POLE_5", x: 43.8, y: 0.0, device: "电线杆5"}
+    - {name: "POLE_6", x: 43.8, y: 20.0, device: "电线杆6"}
+    - {name: "UGV2_RETURN", x: 45.0, y: 40.0, device: "返回起点"}

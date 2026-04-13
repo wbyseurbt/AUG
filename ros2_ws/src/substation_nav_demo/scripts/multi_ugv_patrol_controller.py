@@ -8,24 +8,11 @@ from typing import Dict, List, Optional
 
 import rclpy
 import yaml
-from gazebo_msgs.msg import ModelStates
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import PoseStamped
+from nav2_msgs.action import NavigateToPose
+from rclpy.action import ActionClient
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-
-
-def _normalize_angle(angle: float) -> float:
-    while angle > math.pi:
-        angle -= 2.0 * math.pi
-    while angle < -math.pi:
-        angle += 2.0 * math.pi
-    return angle
-
-
-def _yaw_from_quaternion(x: float, y: float, z: float, w: float) -> float:
-    siny_cosp = 2.0 * (w * z + x * y)
-    cosy_cosp = 1.0 - 2.0 * (y * y + z * z)
-    return math.atan2(siny_cosp, cosy_cosp)
 
 
 def _to_rgb_bytes(image: Image) -> Optional[bytes]:
@@ -55,8 +42,11 @@ class PatrolPoint:
 @dataclass
 class RobotState:
     index: int = 0
-    dwell_end_sec: float = 0.0
     waiting_for_dwell: bool = False
+    dwell_end_sec: float = 0.0
+    in_flight: bool = False
+    last_goal_token: int = 0
+    retry_after_sec: float = 0.0
     finished: bool = False
     snapshot_taken_at_index: int = -1
 
@@ -66,23 +56,21 @@ class MultiUgvPatrolController(Node):
         super().__init__('multi_ugv_patrol_controller')
 
         self.declare_parameter('waypoints_file', '')
+        self.declare_parameter('frame_id', 'map')
         self.declare_parameter('dwell_sec', 4.0)
         self.declare_parameter('capture_dir', '/tmp/ugv_screenshots')
-        self.declare_parameter('goal_tolerance', 0.7)
-        self.declare_parameter('yaw_tolerance', 0.35)
-        self.declare_parameter('max_linear_speed', 0.4)
-        self.declare_parameter('max_angular_speed', 0.9)
-        self.declare_parameter('k_linear', 0.45)
-        self.declare_parameter('k_angular', 1.2)
+        self.declare_parameter('start_delay_sec', 12.0)
+        self.declare_parameter('goal_retry_sec', 2.0)
+        self.declare_parameter('skip_start_waypoint', True)
 
         self.robot_names = ['ugv1', 'ugv2']
-        self.dwell_sec = float(self.get_parameter('dwell_sec').value)
-        self.goal_tolerance = float(self.get_parameter('goal_tolerance').value)
-        self.yaw_tolerance = float(self.get_parameter('yaw_tolerance').value)
-        self.max_linear_speed = float(self.get_parameter('max_linear_speed').value)
-        self.max_angular_speed = float(self.get_parameter('max_angular_speed').value)
-        self.k_linear = float(self.get_parameter('k_linear').value)
-        self.k_angular = float(self.get_parameter('k_angular').value)
+        self.frame_id = str(self.get_parameter('frame_id').value)
+        requested_dwell_sec = float(self.get_parameter('dwell_sec').value)
+        # Business requirement: per-point inspection dwell time is 3-5 seconds.
+        self.dwell_sec = min(5.0, max(3.0, requested_dwell_sec))
+        self.goal_retry_sec = float(self.get_parameter('goal_retry_sec').value)
+        start_delay_sec = float(self.get_parameter('start_delay_sec').value)
+        self.start_time_sec = self.get_clock().now().nanoseconds / 1e9 + start_delay_sec
 
         capture_dir = str(self.get_parameter('capture_dir').value)
         self.capture_dir = Path(os.path.expanduser(capture_dir))
@@ -90,25 +78,31 @@ class MultiUgvPatrolController(Node):
 
         self.waypoints = self._load_waypoints(str(self.get_parameter('waypoints_file').value))
         self.states: Dict[str, RobotState] = {name: RobotState() for name in self.robot_names}
-
-        self.model_indices: Dict[str, int] = {}
-        self.model_poses: Dict[str, tuple] = {}
-        self.last_images: Dict[str, Optional[Image]] = {name: None for name in self.robot_names}
-
-        self.cmd_pubs = {
-            name: self.create_publisher(Twist, f'/{name}/cmd_vel', 10)
+        skip_start_waypoint = bool(self.get_parameter('skip_start_waypoint').value)
+        if skip_start_waypoint:
+            for robot in self.robot_names:
+                route = self.waypoints.get(robot, [])
+                if len(route) >= 2 and route[0].name.upper().endswith('START'):
+                    self.states[robot].index = 1
+                    self.get_logger().info(f'{robot}: 跳过起点航点，直接前往第一个巡检点')
+        self.action_clients = {
+            name: ActionClient(self, NavigateToPose, f'/{name}/navigate_to_pose')
             for name in self.robot_names
         }
+        self.last_images: Dict[str, Optional[Image]] = {name: None for name in self.robot_names}
 
-        self.create_subscription(ModelStates, '/gazebo/model_states', self._on_model_states, 10)
         for name in self.robot_names:
             self.create_subscription(Image, f'/{name}/camera/image_raw', self._image_callback_builder(name), 10)
 
         self.create_timer(0.1, self._control_loop)
         self.get_logger().info(
-            f'Multi-UGV patrol started, robots={self.robot_names}, dwell={self.dwell_sec:.1f}s, '
-            f'capture_dir={self.capture_dir}'
+            f'Multi-UGV patrol started, robots={self.robot_names}, frame={self.frame_id}, '
+            f'dwell={self.dwell_sec:.1f}s, capture_dir={self.capture_dir}, start_delay={start_delay_sec:.1f}s'
         )
+        if abs(self.dwell_sec - requested_dwell_sec) > 1e-6:
+            self.get_logger().warn(
+                f'dwell_sec={requested_dwell_sec:.2f} 超出业务范围，已限制到 {self.dwell_sec:.1f}s'
+            )
 
     def _load_waypoints(self, file_path: str) -> Dict[str, List[PatrolPoint]]:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -136,19 +130,6 @@ class MultiUgvPatrolController(Node):
             self.last_images[robot] = msg
         return _cb
 
-    def _on_model_states(self, msg: ModelStates):
-        for i, model_name in enumerate(msg.name):
-            if model_name in self.states:
-                self.model_indices[model_name] = i
-                pose = msg.pose[i]
-                yaw = _yaw_from_quaternion(
-                    pose.orientation.x,
-                    pose.orientation.y,
-                    pose.orientation.z,
-                    pose.orientation.w,
-                )
-                self.model_poses[model_name] = (pose.position.x, pose.position.y, yaw)
-
     def _save_snapshot(self, robot: str, point: PatrolPoint):
         image = self.last_images.get(robot)
         if image is None:
@@ -171,65 +152,128 @@ class MultiUgvPatrolController(Node):
             f.write(rgb)
         self.get_logger().info(f'{robot}: 已保存截图 -> {file_path}')
 
-    def _stop_robot(self, robot: str):
-        self.cmd_pubs[robot].publish(Twist())
+    def _build_goal(self, robot: str) -> NavigateToPose.Goal:
+        state = self.states[robot]
+        points = self.waypoints[robot]
+        target = points[state.index]
+        if state.index + 1 < len(points):
+            next_point = points[state.index + 1]
+            yaw = math.atan2(next_point.y - target.y, next_point.x - target.x)
+        else:
+            yaw = 0.0
+
+        pose = PoseStamped()
+        pose.header.frame_id = self.frame_id
+        pose.header.stamp = self.get_clock().now().to_msg()
+        pose.pose.position.x = target.x
+        pose.pose.position.y = target.y
+        pose.pose.orientation.z = math.sin(yaw * 0.5)
+        pose.pose.orientation.w = math.cos(yaw * 0.5)
+
+        goal = NavigateToPose.Goal()
+        goal.pose = pose
+        return goal
+
+    def _send_goal(self, robot: str, now_sec: float):
+        state = self.states[robot]
+        points = self.waypoints.get(robot, [])
+        if state.finished or state.in_flight or state.waiting_for_dwell:
+            return
+        if not points:
+            state.finished = True
+            self.get_logger().warn(f'{robot}: 航点为空，任务结束')
+            return
+        if state.index >= len(points):
+            state.finished = True
+            self.get_logger().info(f'{robot}: 全部航点完成')
+            return
+        if now_sec < state.retry_after_sec:
+            return
+
+        client = self.action_clients[robot]
+        if not client.wait_for_server(timeout_sec=0.05):
+            return
+
+        target = points[state.index]
+        goal = self._build_goal(robot)
+        state.in_flight = True
+        state.last_goal_token += 1
+        token = state.last_goal_token
+        self.get_logger().info(
+            f'{robot}: 发送航点 {state.index + 1}/{len(points)} {target.name} '
+            f'({target.x:.2f}, {target.y:.2f})'
+        )
+        future = client.send_goal_async(goal)
+        future.add_done_callback(lambda fut, r=robot, t=token: self._on_goal_response(r, t, fut))
+
+    def _on_goal_response(self, robot: str, token: int, future):
+        state = self.states[robot]
+        if token != state.last_goal_token:
+            return
+        try:
+            handle = future.result()
+            if not handle.accepted:
+                state.in_flight = False
+                state.retry_after_sec = self.get_clock().now().nanoseconds / 1e9 + self.goal_retry_sec
+                self.get_logger().warn(f'{robot}: Nav2 拒绝航点，稍后重试')
+                return
+            result_future = handle.get_result_async()
+            result_future.add_done_callback(lambda fut, r=robot, t=token: self._on_goal_done(r, t, fut))
+        except Exception as exc:
+            state.in_flight = False
+            state.retry_after_sec = self.get_clock().now().nanoseconds / 1e9 + self.goal_retry_sec
+            self.get_logger().warn(f'{robot}: 航点发送异常 {exc}，稍后重试')
+
+    def _on_goal_done(self, robot: str, token: int, future):
+        state = self.states[robot]
+        if token != state.last_goal_token:
+            return
+
+        state.in_flight = False
+        now_sec = self.get_clock().now().nanoseconds / 1e9
+        try:
+            wrapped_result = future.result()
+            status = getattr(wrapped_result, 'status', None)
+        except Exception as exc:
+            state.retry_after_sec = now_sec + self.goal_retry_sec
+            self.get_logger().warn(f'{robot}: 航点结果异常 {exc}，稍后重试')
+            return
+
+        # GoalStatus.STATUS_SUCCEEDED = 4
+        if status != 4:
+            state.retry_after_sec = now_sec + self.goal_retry_sec
+            self.get_logger().warn(f'{robot}: 航点失败 status={status}，稍后重试')
+            return
+
+        points = self.waypoints[robot]
+        target = points[state.index]
+        self.get_logger().info(f'{robot}: 正在检测设备 {target.device}...')
+        if state.snapshot_taken_at_index != state.index:
+            self._save_snapshot(robot, target)
+            state.snapshot_taken_at_index = state.index
+        state.waiting_for_dwell = True
+        state.dwell_end_sec = now_sec + self.dwell_sec
 
     def _control_loop(self):
         now_sec = self.get_clock().now().nanoseconds / 1e9
+        if now_sec < self.start_time_sec:
+            return
 
         for robot in self.robot_names:
             state = self.states[robot]
-            points = self.waypoints.get(robot, [])
-            pose = self.model_poses.get(robot)
-
             if state.finished:
-                self._stop_robot(robot)
-                continue
-            if not points or pose is None:
                 continue
 
-            if state.index >= len(points):
-                state.finished = True
-                self._stop_robot(robot)
-                self.get_logger().info(f'{robot}: 全部航点完成')
-                continue
-
-            target = points[state.index]
-            x, y, yaw = pose
-            dx = target.x - x
-            dy = target.y - y
-            distance = math.hypot(dx, dy)
-            heading = math.atan2(dy, dx)
-            yaw_error = _normalize_angle(heading - yaw)
-
-            if distance < self.goal_tolerance and abs(yaw_error) < self.yaw_tolerance:
-                self._stop_robot(robot)
-                if not state.waiting_for_dwell:
-                    state.waiting_for_dwell = True
-                    state.dwell_end_sec = now_sec + self.dwell_sec
-                    self.get_logger().info(f'{robot}: 正在检测设备 {target.device}...')
-                    if state.snapshot_taken_at_index != state.index:
-                        self._save_snapshot(robot, target)
-                        state.snapshot_taken_at_index = state.index
-                elif now_sec >= state.dwell_end_sec:
+            if state.waiting_for_dwell:
+                if now_sec >= state.dwell_end_sec:
                     state.waiting_for_dwell = False
                     state.index += 1
+                    if state.index >= len(self.waypoints.get(robot, [])):
+                        state.finished = True
+                        self.get_logger().info(f'{robot}: 全部航点完成')
                 continue
 
-            state.waiting_for_dwell = False
-            cmd = Twist()
-            cmd.angular.z = max(
-                -self.max_angular_speed,
-                min(self.max_angular_speed, self.k_angular * yaw_error),
-            )
-            if abs(yaw_error) > 0.7:
-                cmd.linear.x = 0.0
-            else:
-                cmd.linear.x = max(
-                    0.0,
-                    min(self.max_linear_speed, self.k_linear * distance),
-                )
-            self.cmd_pubs[robot].publish(cmd)
+            self._send_goal(robot, now_sec)
 
 
 def main():

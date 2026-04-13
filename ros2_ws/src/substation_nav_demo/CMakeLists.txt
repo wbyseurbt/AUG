@@ -22,6 +22,9 @@ install(PROGRAMS
   scripts/goal_marker_publisher.py
   scripts/spawn_obstacle_ahead.py
   scripts/multi_ugv_patrol_controller.py
+  scripts/multi_ugv_initial_pose_publisher.py
+  scripts/odom_tf_republisher.py
+  scripts/multi_ugv_route_marker_publisher.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

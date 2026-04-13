@@ -186,7 +186,8 @@
     </plugin>
     <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
       <ros>
-        <namespace>/</namespace>
+        <remapping>/tf:=tf</remapping>
+        <remapping>/tf_static:=tf_static</remapping>
         <remapping>cmd_vel:=cmd_vel</remapping>
         <remapping>odom:=odom</remapping>
       </ros>
