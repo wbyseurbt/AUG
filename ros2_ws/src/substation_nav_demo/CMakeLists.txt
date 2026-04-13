@@ -21,6 +21,7 @@ install(PROGRAMS
   scripts/auto_goal_sender.py
   scripts/goal_marker_publisher.py
   scripts/spawn_obstacle_ahead.py
+  scripts/multi_ugv_patrol_controller.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

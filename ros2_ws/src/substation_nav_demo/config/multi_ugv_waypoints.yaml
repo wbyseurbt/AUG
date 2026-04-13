@@ -1,0 +1,12 @@
+robots:
+  ugv1:
+    - {name: "UGV1_START", x: -35.0, y: -35.0, device: "起点"}
+    - {name: "TF_A", x: -13.2, y: -10.0, device: "变压器A"}
+    - {name: "TF_B", x: -13.2, y: 10.0, device: "变压器B"}
+    - {name: "UGV1_RETURN", x: -35.0, y: -35.0, device: "返回起点"}
+
+  ugv2:
+    - {name: "UGV2_START", x: -28.0, y: -35.0, device: "起点"}
+    - {name: "INS_A", x: 23.8, y: 0.0, device: "绝缘子排A"}
+    - {name: "INS_B", x: 43.8, y: 0.0, device: "绝缘子排B"}
+    - {name: "UGV2_RETURN", x: -28.0, y: -35.0, device: "返回起点"}
