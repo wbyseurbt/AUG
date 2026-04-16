@@ -11,6 +11,7 @@ def _build_multi_robot_actions(context):
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     xacro_file = PathJoinSubstitution([FindPackageShare('my_robot'), 'urdf', 'diffbot.urdf.xacro'])
+    ekf_config_file = PathJoinSubstitution([FindPackageShare('substation_nav_demo'), 'config', 'ekf_2d.yaml'])
     robot_description = Command(['xacro ', xacro_file])
 
     # Keep aligned with single-robot route anchors:
@@ -41,6 +42,13 @@ def _build_multi_robot_actions(context):
                     executable='odom_tf_republisher.py',
                     name='odom_tf_republisher',
                     remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')],
+                    output='screen',
+                ),
+                Node(
+                    package='robot_localization',
+                    executable='ekf_node',
+                    name='ekf_filter_node',
+                    parameters=[ekf_config_file, {'use_sim_time': use_sim_time}],
                     output='screen',
                 ),
             ])
@@ -118,7 +126,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'nav2_params_ugv1',
-            default_value=PathJoinSubstitution([demo_share, 'config', 'nav2_narrow_road_params.yaml'])
+            default_value=PathJoinSubstitution([demo_share, 'config', 'nav2_narrow_road_params_ugv1.yaml'])
         ),
         DeclareLaunchArgument(
             'nav2_params_ugv2',

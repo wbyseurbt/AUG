@@ -21,7 +21,7 @@ amcl:
     max_particles: 2000
     min_particles: 500
     odom_frame_id: "odom"
-    odom_topic: /ugv2/odometry/filtered
+    odom_topic: /ugv1/odometry/filtered
     pf_err: 0.03
     pf_z: 0.99
     recovery_alpha_fast: 0.0
@@ -38,12 +38,12 @@ amcl:
     z_max: 0.05
     z_rand: 0.25
     z_short: 0.05
-    scan_topic: /ugv2/scan
+    scan_topic: /ugv1/scan
     set_initial_pose: true
     # 与当前 Gazebo 出生点 (0,0) 对齐的常用初值；若激光与栅格明显错位，请在 RViz 用「2D Pose Estimate」修正。
     initial_pose:
-      x: 45.0
-      y: 40.0
+      x: -35.0
+      y: -35.0
       z: 0.0
       yaw: 0.0
 
@@ -52,7 +52,7 @@ bt_navigator:
     use_sim_time: True
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: /ugv2/odometry/filtered
+    odom_topic: /ugv1/odometry/filtered
     bt_loop_duration: 10
     default_server_timeout: 20
     wait_for_service_timeout: 1000
@@ -117,7 +117,7 @@ controller_server:
   ros__parameters:
     use_sim_time: True
     controller_frequency: 20.0
-    odom_topic: /ugv2/odometry/filtered
+    odom_topic: /ugv1/odometry/filtered
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
@@ -170,7 +170,7 @@ controller_server:
       GoalAlign.forward_point_distance: 0.12
       PathDist.scale: 28.0
       GoalDist.scale: 16.0
-      RotateToGoal.scale: 16.0
+      RotateToGoal.scale: 8.0
       RotateToGoal.slowing_factor: 6.0
       RotateToGoal.lookahead_time: -1.0
 
@@ -193,7 +193,7 @@ local_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /ugv2/scan
+          topic: /ugv1/scan
           data_type: "LaserScan"
           clearing: True
           marking: True
@@ -229,7 +229,7 @@ global_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /ugv2/scan
+          topic: /ugv1/scan
           data_type: "LaserScan"
           clearing: True
           marking: True

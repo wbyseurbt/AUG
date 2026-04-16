@@ -16,6 +16,7 @@ def generate_launch_description():
     autostart = LaunchConfiguration('autostart')
 
     obstacle_ahead_distance = LaunchConfiguration('obstacle_ahead_distance')
+    obstacle_min_ahead_distance = LaunchConfiguration('obstacle_min_ahead_distance')
     obstacle_lateral_offset = LaunchConfiguration('obstacle_lateral_offset')
     obstacle_random_lateral_range = LaunchConfiguration('obstacle_random_lateral_range')
     obstacle_z = LaunchConfiguration('obstacle_z')
@@ -39,6 +40,7 @@ def generate_launch_description():
     my_robot_share = FindPackageShare('my_robot')
     demo_share = FindPackageShare('substation_nav_demo')
     obstacle_model_file = PathJoinSubstitution([demo_share, 'models', 'temporary_box', 'model.sdf'])
+    ekf_config_file = PathJoinSubstitution([demo_share, 'config', 'ekf_2d.yaml'])
 
     combo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -68,6 +70,14 @@ def generate_launch_description():
         }.items(),
     )
 
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        parameters=[ekf_config_file, {'use_sim_time': use_sim_time}],
+        output='screen',
+    )
+
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -86,6 +96,7 @@ def generate_launch_description():
             'entity_prefix': 'temporary_box',
             'model_file': obstacle_model_file,
             'ahead_distance': obstacle_ahead_distance,
+                    'min_ahead_distance': obstacle_min_ahead_distance,
             'lateral_offset': obstacle_lateral_offset,
             'random_lateral_range': obstacle_random_lateral_range,
             'z': obstacle_z,
@@ -186,9 +197,10 @@ def generate_launch_description():
             default_value=PathJoinSubstitution([demo_share, 'config', 'nav_demo.rviz'])
         ),
         DeclareLaunchArgument('autostart', default_value='true'),
-        DeclareLaunchArgument('obstacle_ahead_distance', default_value='1.2'),
+        DeclareLaunchArgument('obstacle_ahead_distance', default_value='1.6'),
+        DeclareLaunchArgument('obstacle_min_ahead_distance', default_value='1.6'),
         DeclareLaunchArgument('obstacle_lateral_offset', default_value='0.0'),
-        DeclareLaunchArgument('obstacle_random_lateral_range', default_value='0.35'),
+        DeclareLaunchArgument('obstacle_random_lateral_range', default_value='0.20'),
         DeclareLaunchArgument('obstacle_z', default_value='0.1'),
         DeclareLaunchArgument('obstacle_start_delay_sec', default_value='30.0'),
         DeclareLaunchArgument('obstacle_period_sec', default_value='60.0'),
@@ -223,6 +235,7 @@ def generate_launch_description():
             output='screen',
         ),
         combo_launch,
+        ekf_node,
         nav2_launch,
         rviz_node,
         goal_marker_pub,

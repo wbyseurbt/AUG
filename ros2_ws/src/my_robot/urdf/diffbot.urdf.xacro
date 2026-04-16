@@ -7,8 +7,8 @@
   <!-- base_footprint 用于2D导航常见基座帧 -->
   <link name="base_footprint"/>
   <joint name="base_footprint_joint" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link"/>
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
@@ -204,7 +204,7 @@
 
       <!-- limits -->
       <max_wheel_torque>40</max_wheel_torque>
-      <max_wheel_acceleration>12.0</max_wheel_acceleration>
+      <max_wheel_acceleration>18.0</max_wheel_acceleration>
 
       <!-- output -->
       <publish_odom>true</publish_odom>
@@ -287,6 +287,41 @@
     <child link="camera_link"/>
     <origin xyz="0.2 0 0.08" rpy="0 0 0"/>
   </joint>
+
+  <!-- IMU (姿态稳定用) -->
+  <link name="imu_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0.0 0.0 0.12" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>false</visualize>
+      <plugin name="imu_controller" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <argument>~/out:=imu/data</argument>
+        </ros>
+        <frame_name>imu_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
 
   <gazebo reference="camera_link">
     <material>Gazebo/Black</material>

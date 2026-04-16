@@ -21,6 +21,7 @@ amcl:
     max_particles: 2000
     min_particles: 500
     odom_frame_id: "odom"
+    odom_topic: /odometry/filtered
     pf_err: 0.03
     pf_z: 0.99
     recovery_alpha_fast: 0.0
@@ -37,7 +38,7 @@ amcl:
     z_max: 0.05
     z_rand: 0.25
     z_short: 0.05
-    scan_topic: scan
+    scan_topic: /scan
     set_initial_pose: true
     # 与当前 Gazebo 出生点 (0,0) 对齐的常用初值；若激光与栅格明显错位，请在 RViz 用「2D Pose Estimate」修正。
     initial_pose:
@@ -51,7 +52,7 @@ bt_navigator:
     use_sim_time: True
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: odom
+    odom_topic: /odometry/filtered
     bt_loop_duration: 10
     default_server_timeout: 20
     wait_for_service_timeout: 1000
@@ -116,6 +117,7 @@ controller_server:
   ros__parameters:
     use_sim_time: True
     controller_frequency: 20.0
+    odom_topic: /odometry/filtered
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
@@ -132,7 +134,7 @@ controller_server:
       stateful: True
       # 过紧易在终点附近来回扭动、轮子空转；略放宽以换顺滑停稳
       xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.50
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       # 关闭后不再发布大量候选轨迹 Marker，避免 RViz 里“轨迹乱跳”的错觉
@@ -144,10 +146,11 @@ controller_server:
       min_speed_xy: 0.0
       max_speed_xy: 0.35
       min_speed_theta: 0.0
-      acc_lim_x: 1.2
+      # Sync with diff drive max_wheel_acceleration=18.0 and wheel_radius=0.075 -> linear ~1.35 m/s^2
+      acc_lim_x: 1.35
       acc_lim_y: 0.0
       acc_lim_theta: 2.0
-      decel_lim_x: -1.2
+      decel_lim_x: -1.35
       decel_lim_y: 0.0
       decel_lim_theta: -2.0
       vx_samples: 20
@@ -167,7 +170,7 @@ controller_server:
       GoalAlign.forward_point_distance: 0.12
       PathDist.scale: 28.0
       GoalDist.scale: 16.0
-      RotateToGoal.scale: 16.0
+      RotateToGoal.scale: 8.0
       RotateToGoal.slowing_factor: 6.0
       RotateToGoal.lookahead_time: -1.0
 
@@ -190,7 +193,7 @@ local_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: scan
+          topic: /scan
           data_type: "LaserScan"
           clearing: True
           marking: True
@@ -225,7 +228,7 @@ global_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: scan
+          topic: /scan
           data_type: "LaserScan"
           clearing: True
           marking: True

@@ -15,6 +15,7 @@ class SpawnObstacleAhead(Node):
         self.declare_parameter('entity_prefix', 'temporary_box')
         self.declare_parameter('model_file', '')
         self.declare_parameter('ahead_distance', 1.2)
+        self.declare_parameter('min_ahead_distance', 1.6)
         self.declare_parameter('lateral_offset', 0.0)
         self.declare_parameter('random_lateral_range', 0.35)
         self.declare_parameter('z', 0.1)
@@ -27,6 +28,7 @@ class SpawnObstacleAhead(Node):
         self.entity_prefix = self.get_parameter('entity_prefix').value
         self.model_file = self.get_parameter('model_file').value
         self.ahead_distance = float(self.get_parameter('ahead_distance').value)
+        self.min_ahead_distance = float(self.get_parameter('min_ahead_distance').value)
         self.lateral_offset = float(self.get_parameter('lateral_offset').value)
         self.random_lateral_range = float(self.get_parameter('random_lateral_range').value)
         self.z = float(self.get_parameter('z').value)
@@ -42,7 +44,9 @@ class SpawnObstacleAhead(Node):
         self.next_spawn_time_sec = self.start_delay_sec
         self.spawn_count = 0
         self.model_xml = ''
-        self.timer = self.create_timer(0.2, self._tick)
+        # Disabled periodic obstacle spawning by request.
+        # self.timer = self.create_timer(0.2, self._tick)
+        self.timer = None
 
     def _on_odom(self, msg: Odometry):
         self.odom_msg = msg
@@ -74,9 +78,11 @@ class SpawnObstacleAhead(Node):
 
         pose = self.odom_msg.pose.pose
         yaw = self._yaw_from_quat(pose.orientation.z, pose.orientation.w)
+        # Keep obstacle safely in front of robot to avoid spawning on/too close to chassis.
+        effective_ahead_distance = max(self.ahead_distance, self.min_ahead_distance)
         lateral = self.lateral_offset + random.uniform(-self.random_lateral_range, self.random_lateral_range)
-        ahead_x = pose.position.x + self.ahead_distance * math.cos(yaw) - lateral * math.sin(yaw)
-        ahead_y = pose.position.y + self.ahead_distance * math.sin(yaw) + lateral * math.cos(yaw)
+        ahead_x = pose.position.x + effective_ahead_distance * math.cos(yaw) - lateral * math.sin(yaw)
+        ahead_y = pose.position.y + effective_ahead_distance * math.sin(yaw) + lateral * math.cos(yaw)
         self.spawn_count += 1
         name = self.entity_name if self.spawn_period_sec <= 0.0 else f'{self.entity_prefix}_{self.spawn_count}'
 
@@ -91,7 +97,8 @@ class SpawnObstacleAhead(Node):
 
         self.get_logger().info(
             f'Spawning {name} ahead of robot at '
-            f'({ahead_x:.2f}, {ahead_y:.2f}, {self.z:.2f}), yaw={yaw:.2f}, lateral={lateral:.2f}'
+            f'({ahead_x:.2f}, {ahead_y:.2f}, {self.z:.2f}), '
+            f'ahead={effective_ahead_distance:.2f}, yaw={yaw:.2f}, lateral={lateral:.2f}'
         )
         future = self.spawn_client.call_async(req)
         future.add_done_callback(self._on_spawn_done)

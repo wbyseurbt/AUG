@@ -9,6 +9,7 @@ from typing import Dict, List, Optional
 import rclpy
 import yaml
 from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import Twist
 from nav2_msgs.action import NavigateToPose
 from rclpy.action import ActionClient
 from rclpy.node import Node
@@ -49,6 +50,8 @@ class RobotState:
     retry_after_sec: float = 0.0
     finished: bool = False
     snapshot_taken_at_index: int = -1
+    capture_phase: str = 'idle'
+    phase_end_sec: float = 0.0
 
 
 class MultiUgvPatrolController(Node):
@@ -62,6 +65,10 @@ class MultiUgvPatrolController(Node):
         self.declare_parameter('start_delay_sec', 12.0)
         self.declare_parameter('goal_retry_sec', 2.0)
         self.declare_parameter('skip_start_waypoint', True)
+        self.declare_parameter('capture_turn_deg', 90.0)
+        self.declare_parameter('capture_turn_speed', 0.6)
+        self.declare_parameter('pre_capture_stop_sec', 1.0)
+        self.declare_parameter('post_turn_stabilize_sec', 2.0)
 
         self.robot_names = ['ugv1', 'ugv2']
         self.frame_id = str(self.get_parameter('frame_id').value)
@@ -69,6 +76,11 @@ class MultiUgvPatrolController(Node):
         # Business requirement: per-point inspection dwell time is 3-5 seconds.
         self.dwell_sec = min(5.0, max(3.0, requested_dwell_sec))
         self.goal_retry_sec = float(self.get_parameter('goal_retry_sec').value)
+        self.capture_turn_deg = float(self.get_parameter('capture_turn_deg').value)
+        self.capture_turn_speed = max(0.1, abs(float(self.get_parameter('capture_turn_speed').value)))
+        self.capture_turn_duration_sec = math.radians(abs(self.capture_turn_deg)) / self.capture_turn_speed
+        self.pre_capture_stop_sec = max(0.0, float(self.get_parameter('pre_capture_stop_sec').value))
+        self.post_turn_stabilize_sec = max(0.0, float(self.get_parameter('post_turn_stabilize_sec').value))
         start_delay_sec = float(self.get_parameter('start_delay_sec').value)
         self.start_time_sec = self.get_clock().now().nanoseconds / 1e9 + start_delay_sec
 
@@ -89,6 +101,10 @@ class MultiUgvPatrolController(Node):
             name: ActionClient(self, NavigateToPose, f'/{name}/navigate_to_pose')
             for name in self.robot_names
         }
+        self.cmd_vel_pubs = {
+            name: self.create_publisher(Twist, f'/{name}/cmd_vel', 10)
+            for name in self.robot_names
+        }
         self.last_images: Dict[str, Optional[Image]] = {name: None for name in self.robot_names}
 
         for name in self.robot_names:
@@ -103,6 +119,14 @@ class MultiUgvPatrolController(Node):
             self.get_logger().warn(
                 f'dwell_sec={requested_dwell_sec:.2f} 超出业务范围，已限制到 {self.dwell_sec:.1f}s'
             )
+
+    def _publish_turn(self, robot: str, angular_z: float):
+        msg = Twist()
+        msg.angular.z = angular_z
+        self.cmd_vel_pubs[robot].publish(msg)
+
+    def _stop_robot(self, robot: str):
+        self.cmd_vel_pubs[robot].publish(Twist())
 
     def _load_waypoints(self, file_path: str) -> Dict[str, List[PatrolPoint]]:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -151,6 +175,19 @@ class MultiUgvPatrolController(Node):
             f.write(header)
             f.write(rgb)
         self.get_logger().info(f'{robot}: 已保存截图 -> {file_path}')
+
+    @staticmethod
+    def _is_inspection_point(point: PatrolPoint) -> bool:
+        name_u = point.name.upper()
+        device = point.device
+        # Skip non-inspection waypoints such as start/end/return/middle transit points.
+        blocked_name_tokens = ('START', 'RETURN', 'END', 'MID', 'MIDDLE', 'TRANSIT')
+        blocked_device_tokens = ('起点', '返回', '结束', '中间', '过渡')
+        if any(tok in name_u for tok in blocked_name_tokens):
+            return False
+        if any(tok in device for tok in blocked_device_tokens):
+            return False
+        return True
 
     def _build_goal(self, robot: str) -> NavigateToPose.Goal:
         state = self.states[robot]
@@ -247,12 +284,21 @@ class MultiUgvPatrolController(Node):
 
         points = self.waypoints[robot]
         target = points[state.index]
-        self.get_logger().info(f'{robot}: 正在检测设备 {target.device}...')
-        if state.snapshot_taken_at_index != state.index:
-            self._save_snapshot(robot, target)
-            state.snapshot_taken_at_index = state.index
-        state.waiting_for_dwell = True
-        state.dwell_end_sec = now_sec + self.dwell_sec
+        if not self._is_inspection_point(target):
+            self.get_logger().info(f'{robot}: 到达非设备点 {target.name}，不拍照，直接前往下一点')
+            state.index += 1
+            if state.index >= len(points):
+                state.finished = True
+                self.get_logger().info(f'{robot}: 全部航点完成')
+            return
+
+        # At inspection point: stop 1s -> turn right 90 deg -> stabilize 2s -> capture -> turn back.
+        self._stop_robot(robot)
+        state.capture_phase = 'pre_capture_stop'
+        state.phase_end_sec = now_sec + self.pre_capture_stop_sec
+        self.get_logger().info(
+            f'{robot}: 到达 {target.name}，先停车 {self.pre_capture_stop_sec:.1f}s 再右转拍照'
+        )
 
     def _control_loop(self):
         now_sec = self.get_clock().now().nanoseconds / 1e9
@@ -267,6 +313,53 @@ class MultiUgvPatrolController(Node):
             if state.waiting_for_dwell:
                 if now_sec >= state.dwell_end_sec:
                     state.waiting_for_dwell = False
+                    state.index += 1
+                    if state.index >= len(self.waypoints.get(robot, [])):
+                        state.finished = True
+                        self.get_logger().info(f'{robot}: 全部航点完成')
+                continue
+
+            if state.capture_phase == 'turn_right':
+                self._publish_turn(robot, -self.capture_turn_speed)
+                if now_sec >= state.phase_end_sec:
+                    self._stop_robot(robot)
+                    state.capture_phase = 'post_turn_stabilize'
+                    state.phase_end_sec = now_sec + self.post_turn_stabilize_sec
+                    self.get_logger().info(
+                        f'{robot}: 已右转，停车稳定 {self.post_turn_stabilize_sec:.1f}s 后拍照'
+                    )
+                continue
+
+            if state.capture_phase == 'pre_capture_stop':
+                self._stop_robot(robot)
+                if now_sec >= state.phase_end_sec:
+                    state.capture_phase = 'turn_right'
+                    state.phase_end_sec = now_sec + self.capture_turn_duration_sec
+                    self.get_logger().info(
+                        f'{robot}: 开始右转 {self.capture_turn_deg:.0f}° 以对准设备'
+                    )
+                continue
+
+            if state.capture_phase == 'post_turn_stabilize':
+                self._stop_robot(robot)
+                if now_sec >= state.phase_end_sec:
+                    target = self.waypoints[robot][state.index]
+                    self.get_logger().info(f'{robot}: 正在检测设备 {target.device}...')
+                    if state.snapshot_taken_at_index != state.index:
+                        self._save_snapshot(robot, target)
+                        state.snapshot_taken_at_index = state.index
+                    state.capture_phase = 'turn_back'
+                    state.phase_end_sec = now_sec + self.capture_turn_duration_sec
+                    self.get_logger().info(
+                        f'{robot}: 拍照完成，左转 {self.capture_turn_deg:.0f}° 恢复朝向'
+                    )
+                continue
+
+            if state.capture_phase == 'turn_back':
+                self._publish_turn(robot, self.capture_turn_speed)
+                if now_sec >= state.phase_end_sec:
+                    self._stop_robot(robot)
+                    state.capture_phase = 'idle'
                     state.index += 1
                     if state.index >= len(self.waypoints.get(robot, [])):
                         state.finished = True
