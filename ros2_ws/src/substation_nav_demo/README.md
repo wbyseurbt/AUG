@@ -37,6 +37,50 @@ source install/setup.bash
 ros2 launch substation_nav_demo autonomy_obstacle_demo.launch.py
 ```
 
+## 手动控制（单车，含地图加载）
+
+按下面步骤执行，可进入“加载地图 + 手动驾驶”的调试模式。
+
+### 第1步：终端1启动单车导航并加载地图
+
+```bash
+cd AUG/ros2_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 launch substation_nav_demo autonomy_obstacle_demo.launch.py \
+  map:=/home/robot/AUG/ros2_ws/src/substation_sim/maps/substation_edited.yaml \
+  enable_random_obstacle:=false
+```
+
+### 第2步：在 RViz 初始化定位
+
+- 点击 `2D Pose Estimate`
+- 在机器人初始位置附近点一下方向，确保 `map -> odom` 建立
+
+### 第3步：关闭自动发目标（避免抢控制权）
+
+新开终端2执行：
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/robot/AUG/ros2_ws/install/setup.bash
+pkill -f auto_goal_sender.py
+```
+
+### 第4步：终端3开启键盘遥控
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/robot/AUG/ros2_ws/install/setup.bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=cmd_vel_teleop
+```
+
+说明：
+
+- 当前单车链路已包含 `cmd_vel_repeater`，会把 `cmd_vel_teleop` 转发到 `cmd_vel`。
+- 键位：`i` 前进、`,` 后退、`j/l` 左右转、`k` 停止。
+- 如要恢复自动巡航，重启 launch 或手动重新运行 `auto_goal_sender` 节点。
+
 说明：launch 已默认将 FastDDS 传输切换为 `UDPv4`，用于规避部分环境下大量 `RTPS_TRANSPORT_SHM` 端口锁告警。
 
 如果你要加载 SLAM 保存的全局地图（推荐）：

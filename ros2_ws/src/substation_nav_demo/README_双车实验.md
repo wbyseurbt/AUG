@@ -54,6 +54,55 @@ ros2 launch substation_nav_demo multi_ugv_patrol.launch.py gui:=true
 
 ***
 
+## 3.1 手动控制模式（双车调试，含地图加载）
+
+按下面步骤执行，可进入“加载地图 + 双车手动驾驶”模式。
+
+### 第1步：终端1启动双车并加载地图
+
+```bash
+cd AUG/ros2_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 launch substation_nav_demo multi_ugv_patrol.launch.py \
+  gui:=true \
+  map:=/home/robot/AUG/ros2_ws/src/substation_sim/maps/substation_edited.yaml
+```
+
+### 第2步：关闭自动巡航控制器（避免抢速度指令）
+
+新开终端2执行：
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/robot/AUG/ros2_ws/install/setup.bash
+pkill -f multi_ugv_patrol_controller.py
+```
+
+### 第3步：终端3手动控制 ugv1
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/robot/AUG/ros2_ws/install/setup.bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/ugv1/cmd_vel
+```
+
+### 第4步：终端4手动控制 ugv2
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/robot/AUG/ros2_ws/install/setup.bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/ugv2/cmd_vel
+```
+
+说明：
+
+- 双车手动模式不经过 `cmd_vel_repeater`，键盘命令直接发到各自 `/ugvX/cmd_vel`。
+- 只想手动接管一台车时，只开对应一个 teleop 终端即可。
+- 恢复自动巡航：重启 launch，或手动重新启动 `/multi_ugv_patrol_controller`。
+
+***
+
 ## 4. 业务逻辑闭环（自主巡航）
 
 - `ugv1`：从单车起点 `(-35, -35)` 出发，按固定顺序巡检变电站设备点列，最后返回起点。
@@ -120,4 +169,3 @@ pkill -f gzclient
 - 检查是否有相机话题：`/ugv1/camera/image_raw`、`/ugv2/camera/image_raw`
 - 确认 `capture_dir` 目录可写
 - 终端若提示编码不支持，可改相机输出到 `rgb8` 或 `bgr8`
-
