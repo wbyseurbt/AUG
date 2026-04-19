@@ -44,9 +44,7 @@ class SpawnObstacleAhead(Node):
         self.next_spawn_time_sec = self.start_delay_sec
         self.spawn_count = 0
         self.model_xml = ''
-        # Disabled periodic obstacle spawning by request.
-        # self.timer = self.create_timer(0.2, self._tick)
-        self.timer = None
+        self.timer = self.create_timer(0.2, self._tick)
 
     def _on_odom(self, msg: Odometry):
         self.odom_msg = msg

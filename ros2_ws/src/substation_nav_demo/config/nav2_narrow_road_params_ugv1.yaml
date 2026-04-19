@@ -14,7 +14,7 @@ amcl:
     lambda_short: 0.1
     laser_likelihood_max_dist: 1.8
     # 与 Gazebo 激光 max_range 一致；过大时 AMCL 在自由空间会过度随机匹配，导致 map↔odom 抖动
-    laser_max_range: 12.0
+    laser_max_range: 30.0
     laser_min_range: 0.1
     laser_model_type: "likelihood_field"
     max_beams: 120

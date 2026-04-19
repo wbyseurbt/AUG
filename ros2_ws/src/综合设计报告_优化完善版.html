@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>变电站巡检机器人综合设计报告（优化完善版）</title>
+<style>
+body { font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; line-height: 1.6; margin: 28px; }
+h1,h2,h3 { color: #1f2d3d; }
+h1 { text-align: center; margin-bottom: 6px; }
+.subtitle { text-align: center; color: #666; margin-top: 0; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+th, td { border: 1px solid #666; padding: 8px; vertical-align: top; }
+th { background: #f3f6f9; }
+.code { font-family: Consolas, monospace; background: #f7f7f7; padding: 1px 4px; }
+ul { margin-top: 4px; }
+</style>
+</head>
+<body>
+<h1>变电站巡检机器人综合设计报告（优化完善版）</h1>
+<p class="subtitle">基于 ROS2 + Gazebo + Nav2 的单车/双车巡检系统</p>
+<p class="subtitle">说明：本报告在原综合设计报告基础上进行结构优化与内容完善，新增工程化分析、代码对应、量化测试与可迭代改进方案。</p>
+
+<h2>1. 项目简介</h2>
+<p>本项目面向变电站巡检场景，构建了“仿真环境—机器人模型—定位导航—巡检业务”全链路系统。系统支持单车与双车两种运行模式：单车模式用于验证基础导航与避障闭环，双车模式用于验证命名空间隔离下的并行巡检能力。系统可在设备点完成到达停留、终端打卡、相机截图保存等业务动作，实现从“能走”到“能巡检”的功能闭环。</p>
+<p>与原报告相比，本优化版进一步强调以下三点：一是将功能描述与代码实现一一对应，提升可复现性；二是补充测试指标与验收标准，提升可评价性；三是提出分阶段可落地优化路线，提升可持续迭代能力。</p>
+
+<h2>2. 需求分析（优化版）</h2>
+<h3>2.1 功能需求</h3>
+<ul>
+<li>构建可用于算法验证的变电站仿真环境，包含围墙、道路、主控楼、变压器、电塔等要素。</li>
+<li>完成差速小车运动控制与传感器集成（LiDAR、Camera、IMU），支持键盘控制与自主导航。</li>
+<li>完成 SLAM 建图与静态地图复用，支持 Nav2 导航任务执行与动态障碍绕行。</li>
+<li>完成双车并行巡检：各车独立航点队列、独立导航实例、独立任务状态机。</li>
+<li>到达设备点后执行业务动作：停留检测、右转对准、截图归档、日志记录。</li>
+</ul>
+<h3>2.2 性能需求</h3>
+<ul>
+<li>导航稳定性：窄路/空旷区不出现持续振荡，不发生频繁任务中断。</li>
+<li>任务连续性：单点失败可重试，避免整条任务链路直接中断。</li>
+<li>并行可运行性：双车模式下各命名空间话题无冲突，巡检流程互不阻塞。</li>
+<li>可观测性：关键状态在终端可追踪，轨迹在 RViz 可视化，截图可回溯。</li>
+</ul>
+<h3>2.3 工程性需求</h3>
+<ul>
+<li>参数外置：导航与任务参数通过 YAML 管理，减少硬编码。</li>
+<li>分层解耦：模型、场景、任务控制分包管理，便于多人协作。</li>
+<li>可维护性：保留统一 launch 入口，优先通过底层增强而非顶层重构实现能力扩展。</li>
+</ul>
+
+<h2>3. 系统总体设计</h2>
+<h3>3.1 分层架构</h3>
+<ul>
+<li><b>仿真层</b>：Gazebo 负责世界、物理碰撞、传感器插件运行。</li>
+<li><b>模型层</b>：URDF/Xacro 定义机器人结构、运动学与传感器参数。</li>
+<li><b>定位导航层</b>：EKF + AMCL + Nav2（规划、控制、恢复行为）。</li>
+<li><b>应用层</b>：巡检控制器负责航点调度、拍照流程与日志闭环。</li>
+</ul>
+
+<h3>3.2 关键数据流</h3>
+<ul>
+<li>感知流：<span class="code">/ugvX/scan</span>、<span class="code">/ugvX/camera/image_raw</span>、<span class="code">/ugvX/imu/data</span>、<span class="code">/ugvX/odom</span>。</li>
+<li>定位流：里程计+IMU 融合生成 <span class="code">/ugvX/odometry/filtered</span>；AMCL 利用激光与地图估计位姿。</li>
+<li>导航流：巡检控制器发送 <span class="code">navigate_to_pose</span>，Nav2 计算并输出 <span class="code">cmd_vel</span>。</li>
+<li>业务流：到点事件触发“停留—转向—拍照—回正—下一点”状态转移。</li>
+</ul>
+
+<h3>3.3 代码组织与职责</h3>
+<table>
+<tr><th>包名</th><th>职责</th><th>典型文件</th></tr>
+<tr><td>my_robot</td><td>机器人本体、传感器、驱动插件</td><td>diffbot.urdf.xacro</td></tr>
+<tr><td>substation_sim</td><td>变电站世界、地图与 SLAM 入口</td><td>worlds / maps / slam.launch.py</td></tr>
+<tr><td>substation_nav_demo</td><td>导航参数、双车启动、巡检控制</td><td>multi_ugv_patrol.launch.py / multi_ugv_patrol_controller.py</td></tr>
+</table>
+
+<h2>4. 核心模块设计与实现</h2>
+<h3>4.1 仿真场景建模</h3>
+<p>采用“视觉模型与碰撞模型分离”的建模策略：视觉层用于还原场景，碰撞层采用简化几何体以提升实时率。该策略在保证导航可感知障碍边界的同时，降低物理求解开销。</p>
+
+<h3>4.2 小车模型与传感器集成</h3>
+<p>小车采用差速底盘模型，集成 LiDAR、RGB 相机、IMU。LiDAR 量程统一扩展为 30m（已同步模型与导航参数），确保单双车模式感知配置一致，减少参数漂移风险。</p>
+
+<h3>4.3 定位与导航</h3>
+<p>定位采用 EKF 融合里程计与 IMU，AMCL 执行基于激光与静态地图的定位修正。导航采用 Nav2：全局规划负责可达路径，局部控制负责轨迹跟踪与避障。对于窄路与设备密集区域，控制器参数优先保障“稳定通过率”而非极限速度。</p>
+
+<h3>4.4 双车协同与命名空间隔离</h3>
+<p>双车并行的核心不是共享导航，而是“每车独立实例 + 统一调度入口”。通过 <span class="code">/ugv1</span> 与 <span class="code">/ugv2</span> 命名空间隔离话题、参数与动作接口，避免冲突并降低联调复杂度。</p>
+
+<h3>4.5 巡检业务状态机</h3>
+<p>任务控制器采用多车并行有限状态机：待发目标 → 在途 → 到点停留 → 右转拍照 → 回正 → 下一点。非设备点（如 START/RETURN/MIDDLE）只作为路径约束点，不触发拍照动作，提升执行效率。</p>
+
+<h2>5. 测试与评估（增强版）</h2>
+<h3>5.1 测试场景</h3>
+<ul>
+<li>场景 A：单车全路径巡航（静态环境）</li>
+<li>场景 B：单车动态障碍注入（局部重规划）</li>
+<li>场景 C：双车并行巡检（命名空间隔离）</li>
+<li>场景 D：返航段（空旷区域稳定性）</li>
+</ul>
+
+<h3>5.2 建议验收指标</h3>
+<table>
+<tr><th>指标</th><th>定义</th><th>建议阈值</th></tr>
+<tr><td>任务成功率</td><td>完整航点序列成功执行比例</td><td>≥ 95%</td></tr>
+<tr><td>返航成功率</td><td>从末端点返回起点成功比例</td><td>≥ 95%</td></tr>
+<tr><td>平均重试次数</td><td>每次任务中的导航失败重试次数</td><td>≤ 1 次/任务</td></tr>
+<tr><td>拍照完整率</td><td>设备点应拍尽拍的完成比例</td><td>100%</td></tr>
+<tr><td>并行稳定性</td><td>双车运行中无话题冲突与异常退出</td><td>100%</td></tr>
+</table>
+
+<h3>5.3 结果归档建议</h3>
+<ul>
+<li>日志证据：每次测试保留终端日志与关键告警。</li>
+<li>图像证据：截图按“车号_设备_时间戳”命名并归档。</li>
+<li>参数证据：每次测试记录 YAML 版本与改动摘要，便于回滚与对比。</li>
+</ul>
+
+<h2>6. 现有问题与改进方案</h2>
+<h3>6.1 已观察问题</h3>
+<ul>
+<li>空旷路段定位约束弱，局部控制易出现轻微摆动。</li>
+<li>部分启动流程对固定延时较敏感，时序鲁棒性仍有提升空间。</li>
+<li>双车协同以“并行为主”，尚未引入任务级会车优先规则。</li>
+</ul>
+
+<h3>6.2 可落地优化路线</h3>
+<table>
+<tr><th>阶段</th><th>目标</th><th>措施</th></tr>
+<tr><td>阶段1（稳定性）</td><td>降低返航振荡</td><td>分场景参数管理、返航段中间约束点、到点容差与角速度保守化调优</td></tr>
+<tr><td>阶段2（鲁棒性）</td><td>降低启动失败率</td><td>将固定延时替换为“节点生命周期/TF就绪”事件驱动</td></tr>
+<tr><td>阶段3（协同性）</td><td>减少双车潜在干扰</td><td>引入路段占用、优先级或会车让行策略</td></tr>
+<tr><td>阶段4（工程化）</td><td>提升可复现性</td><td>建立参数基线库与自动化回归测试脚本</td></tr>
+</table>
+
+<h2>7. 总结</h2>
+<p>本项目已实现从单车自主导航到双车协同巡检的完整链路，并在仿真层、导航层、任务层形成可运行闭环。优化版报告在原有基础上进一步强化了“代码可映射、结果可量化、优化可执行”的工程属性。后续将以稳定性、鲁棒性和协同效率为主线持续迭代，推动系统从“课程可演示”走向“工程可复用”。</p>
+
+<h2>附录A：当前双车航点（摘要）</h2>
+<p><b>UGV1：</b>UGV1_START → UGV1_middle → TF_4 → TF_1 → TF_2 → TF_3 → UGV1_middle3 → UGV1_middle4 → UGV1_middle2 → UGV1_RETURN</p>
+<p><b>UGV2：</b>UGV2_START → UGV2_middle → POLE_1 → POLE_2 → POLE_3 → UGV2_middle3 → UGV2_middle4 → POLE_4 → POLE_5 → POLE_6 → UGV2_RETURN</p>
+
+<h2>附录B：关键参数变更记录（本次）</h2>
+<ul>
+<li>LiDAR 量程：从 12.0m 统一调整为 30.0m（模型与单/双车导航参数同步）。</li>
+<li>报告组织方式：由“功能描述主导”优化为“需求-架构-实现-测试-优化”闭环结构。</li>
+</ul>
+
+</body>
+</html>
